@@ -38,8 +38,9 @@ kill_handler() {
 trap 'kill ${!}; kill_handler' SIGTERM # docker stop
 trap 'kill ${!}; kill_handler' SIGINT  # CTRL + C
 
-if [[ -z "${UID}" || "${UID}" -eq 0 ]]; then
-  UID=9987
+GUID="${UID}"
+if [[ -z "${GUID}" || "${GUID}" -eq 0 ]]; then
+  GUID=9987
 fi
 
 if [[ -z "${GID}" || "${GID}" -eq 0 ]]; then
@@ -54,10 +55,10 @@ caps="$cap_prefix$(seq -s ",$cap_prefix" 0 $(cat /proc/sys/kernel/cap_last_cap))
 SETPRIV="setpriv --clear-groups --inh-caps=$caps"
 
 # set user id
-echo "User ID: $UID"
-SETPRIV="$SETPRIV --reuid=$UID"
+echo "User ID: $GUID"
+SETPRIV="$SETPRIV --reuid=$GUID"
 echo "Change file owner..."
-chown -R "$UID" "$PWD"
+chown -R "$GUID" "$PWD"
 
 # set group id
 echo "Group ID: $GID"
