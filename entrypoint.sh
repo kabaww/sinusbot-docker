@@ -38,32 +38,36 @@ kill_handler() {
 trap 'kill ${!}; kill_handler' SIGTERM # docker stop
 trap 'kill ${!}; kill_handler' SIGINT  # CTRL + C
 
-if [[ -v UID ]] || [[ -v GID ]]; then
-  # WORKAROUND for `setpriv: libcap-ng is too old for "all" caps`, previously "-all" was used here
-  # create a list to drop all capabilities supported by current kernel
-  cap_prefix="-cap_"
-  caps="$cap_prefix$(seq -s ",$cap_prefix" 0 $(cat /proc/sys/kernel/cap_last_cap))"
-
-  SETPRIV="setpriv --clear-groups --inh-caps=$caps"
-
-  # set user id
-  if [[ -v UID ]]; then
-    echo "User ID: $UID"
-    SETPRIV="$SETPRIV --reuid=$UID"
-    echo "Change file owner..."
-    chown -R "$UID" "$PWD"
-  fi
-  # set group id
-  if [[ -v GID ]]; then
-    echo "Group ID: $GID"
-    SETPRIV="$SETPRIV --regid=$GID"
-    echo "Change file group..."
-    chown -R ":$GID" "$PWD"
-  fi
-  echo "Drop privileges..."
-  SINUSBOT="$SETPRIV $SINUSBOT"
-  YTDL="$SETPRIV $YTDL"
+if [[ -z "${UID}" || "${UID}" -eq 0 ]]; then
+  UID=9987
 fi
+
+if [[ -z "${GID}" || "${GID}" -eq 0 ]]; then
+  GID=9987
+fi
+
+# WORKAROUND for `setpriv: libcap-ng is too old for "all" caps`, previously "-all" was used here
+# create a list to drop all capabilities supported by current kernel
+cap_prefix="-cap_"
+caps="$cap_prefix$(seq -s ",$cap_prefix" 0 $(cat /proc/sys/kernel/cap_last_cap))"
+
+SETPRIV="setpriv --clear-groups --inh-caps=$caps"
+
+# set user id
+echo "User ID: $UID"
+SETPRIV="$SETPRIV --reuid=$UID"
+echo "Change file owner..."
+chown -R "$UID" "$PWD"
+
+# set group id
+echo "Group ID: $GID"
+SETPRIV="$SETPRIV --regid=$GID"
+echo "Change file group..."
+chown -R ":$GID" "$PWD"
+
+echo "Drop privileges..."
+SINUSBOT="$SETPRIV $SINUSBOT"
+YTDL="$SETPRIV $YTDL"
 
 echo "Clearing yt-dlp cache..."
 $YTDL --rm-cache-dir

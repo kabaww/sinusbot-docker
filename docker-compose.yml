@@ -1,9 +1,23 @@
 services:
   sinusbot:
     image: sinusbot/docker
-    restart: always
+    container_name: sinusbot
+    restart: unless-stopped
     ports:
       - 8087:8087
     volumes:
       - ./scripts:/opt/sinusbot/scripts
       - ./data:/opt/sinusbot/data
+
+  teamspeak:
+    image: teamspeaksystems/teamspeak6-server:latest
+    container_name: teamspeak
+    restart: unless-stopped
+    ports:
+      - "9987:9987/udp"
+      - "30033:30033/tcp" # file transfer
+      - "10022:10022/tcp" # SSH, 'secure' Telnet
+    environment:
+      - TSSERVER_LICENSE_ACCEPTED=accept
+    volumes:
+      - ./teamspeak:/var/tsserver
