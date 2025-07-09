@@ -20,10 +20,10 @@ if [[ $REPLY =~ ^([Yy]| ) ]] || [[ -z $REPLY ]]; then
 fi
 
 echo "Replacing version in files..."
-sed -i '' "s|^SINUSBOT_VERSION=.*|SINUSBOT_VERSION=\"$VERSION\"|g" discord/install.sh
-sed -i '' "s|^LABEL version.*|LABEL version=\"$VERSION\"|g" discord/Dockerfile
-sed -i '' "s|^FROM sinusbot.*|FROM $IMAGE:$VERSION-discord|g" Dockerfile
-sed -i '' "s|^LABEL version.*|LABEL version=\"$VERSION\"|g" Dockerfile
+sed -i "s|^SINUSBOT_VERSION=.*|SINUSBOT_VERSION=\"$VERSION\"|g" discord/install.sh
+sed -i "s|^LABEL version.*|LABEL version=\"$VERSION\"|g" discord/Dockerfile
+sed -i "s|^FROM sinusbot.*|FROM $IMAGE:$VERSION-discord|g" Dockerfile
+sed -i "s|^LABEL version.*|LABEL version=\"$VERSION\"|g" Dockerfile
 
 read -p "Show diff? [y/N] " -n 1 -r
 echo
@@ -49,7 +49,6 @@ fi
 read -p "Build images? [Y/n] " -n 1 -r
 echo
 if [[ $REPLY =~ ^([Yy]| ) ]] || [[ -z $REPLY ]]; then
-    docker pull debian:buster-slim
     docker build --platform linux/amd64 -t "$IMAGE":discord discord
     docker tag "$IMAGE":discord "$IMAGE":"$VERSION"-discord
     docker build --platform linux/amd64 -t "$IMAGE":latest .
