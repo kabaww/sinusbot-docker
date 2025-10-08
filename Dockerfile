@@ -1,7 +1,6 @@
-FROM debian:bookworm-slim
-
+FROM debian:bookworm-slim 
 LABEL description="SinusBot - TeamSpeak 3 and Discord music bot."
-LABEL version="1.1f"
+LABEL version="1.1f-pelican"
 
 # Install dependencies and clean up afterwards
 RUN apt-get update && \
@@ -51,17 +50,18 @@ WORKDIR /opt/sinusbot
 ADD install.sh .
 RUN chmod 755 install.sh
 
-# Download/Install SinusBot
-RUN bash install.sh sinusbot
-
-# Download/Install yt-dlp
-RUN bash install.sh yt-dlp
-
-# Download/Install Text-to-Speech
-RUN bash install.sh text-to-speech
-
-# Download/Install TeamSpeak Client
-RUN bash install.sh teamspeak
+# SKIPPING THIS SINCE PELICAN INSTALL FILE WILL DO THIS FOR US
+# # Download/Install SinusBot
+# RUN bash install.sh sinusbot
+#
+# # Download/Install yt-dlp
+# RUN bash install.sh yt-dlp
+#
+# # Download/Install Text-to-Speech
+# RUN bash install.sh text-to-speech
+#
+# # Download/Install TeamSpeak Client
+# RUN bash install.sh teamspeak
 
 ADD entrypoint.sh .
 RUN chmod 755 entrypoint.sh
