@@ -80,7 +80,7 @@ EOT
 	rm TeamSpeak3-Client-linux_amd64/xcbglintegrations/libqxcb-glx-integration.so
 
 	# Set the TS3Path to the config.ini
-	sed -i "s|^TS3Path.*|TS3Path = \"/opt/sinusbot/TeamSpeak3-Client-linux_amd64/ts3client_linux_amd64\"|g" config.ini.configured
+	sed -i "s|^TS3Path.*|TS3Path = \"/TeamSpeak3-Client-linux_amd64/ts3client_linux_amd64\"|g" config.ini.configured
 	echo "Successfully installed the TeamSpeak Client"
 	;;
 esac
