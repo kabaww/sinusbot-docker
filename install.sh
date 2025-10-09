@@ -69,7 +69,7 @@ EOT
 
 	# Install TeamSpeak Client
 	chmod 755 TeamSpeak3-Client-linux_amd64.run
-	printf "\n" | ./TeamSpeak3-Client-linux_amd64.run
+	(yes "" | head -n 100; echo "q"; echo "y") | ./TeamSpeak3-Client-linux_amd64.run
 	rm TeamSpeak3-Client-linux_amd64.run
 
 	# Copy SinusBot plugin
