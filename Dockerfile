@@ -5,6 +5,7 @@ LABEL version="1.1f-pelican"
 # Install dependencies and clean up afterwards
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        tini \
         ca-certificates \
         bzip2 \
         unzip \
@@ -50,18 +51,17 @@ WORKDIR /opt/sinusbot
 ADD install.sh .
 RUN chmod 755 install.sh
 
-# SKIPPING THIS SINCE PELICAN INSTALL FILE WILL DO THIS FOR US
-# # Download/Install SinusBot
-# RUN bash install.sh sinusbot
-#
-# # Download/Install yt-dlp
-# RUN bash install.sh yt-dlp
-#
-# # Download/Install Text-to-Speech
-# RUN bash install.sh text-to-speech
-#
-# # Download/Install TeamSpeak Client
-# RUN bash install.sh teamspeak
+# Download/Install SinusBot
+RUN bash install.sh sinusbot
+
+# Download/Install yt-dlp
+RUN bash install.sh yt-dlp
+
+# Download/Install Text-to-Speech
+RUN bash install.sh text-to-speech
+
+# Download/Install TeamSpeak Client
+RUN bash install.sh teamspeak
 
 ADD entrypoint.sh .
 RUN chmod 755 entrypoint.sh
@@ -70,7 +70,8 @@ EXPOSE 8087
 
 VOLUME ["/opt/sinusbot/data", "/opt/sinusbot/scripts"]
 
-ENTRYPOINT ["/opt/sinusbot/entrypoint.sh"]
+ENTRYPOINT    ["/usr/bin/tini", "-g", "--"]
+CMD         ["/entrypoint.sh"]
 
 HEALTHCHECK --interval=1m --timeout=10s \
   CMD curl --no-keepalive -f http://localhost:8087/api/v1/botId || exit 1
