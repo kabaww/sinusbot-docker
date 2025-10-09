@@ -52,16 +52,16 @@ ADD install.sh .
 RUN chmod 755 install.sh
 
 # Download/Install SinusBot
-RUN bash install.sh sinusbot
+#RUN bash install.sh sinusbot
 
 # Download/Install yt-dlp
-RUN bash install.sh yt-dlp
+#RUN bash install.sh yt-dlp
 
 # Download/Install Text-to-Speech
-RUN bash install.sh text-to-speech
+#RUN bash install.sh text-to-speech
 
 # Download/Install TeamSpeak Client
-RUN bash install.sh teamspeak
+#RUN bash install.sh teamspeak
 
 ADD entrypoint.sh .
 RUN chmod 755 entrypoint.sh
@@ -71,7 +71,7 @@ EXPOSE 8087
 VOLUME ["/opt/sinusbot/data", "/opt/sinusbot/scripts"]
 
 ENTRYPOINT    ["/usr/bin/tini", "-g", "--"]
-CMD         ["/entrypoint.sh"]
+CMD         ["./entrypoint.sh"]
 
 HEALTHCHECK --interval=1m --timeout=10s \
   CMD curl --no-keepalive -f http://localhost:8087/api/v1/botId || exit 1
